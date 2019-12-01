@@ -16,9 +16,7 @@ const implementation = `export default class Day{day} {
 const test = `import Day{day} from '../src/Day{day}'
 
 describe('Day {day}', () => {
-  let runner
-
-  beforeEach(() => (runner = new Day{day}()))
+  const runner = new Day{day}()
 
   test('part 1 behaves', () => {
 

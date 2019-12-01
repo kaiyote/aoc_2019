@@ -1,9 +1,7 @@
 import Day1 from '../src/Day1'
 
 describe('Day 1', () => {
-  let runner
-
-  beforeAll(() => (runner = new Day1()))
+  const runner = new Day1()
 
   test('part 1 behaves', () => {
     expect(runner.part1('12')).toBe(2)
