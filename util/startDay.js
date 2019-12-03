@@ -19,11 +19,11 @@ describe('Day {day}', () => {
   const runner = new Day{day}()
 
   test('part 1 behaves', () => {
-
+    expect(runner.part1(data)).toBe(0)
   })
 
   test('part 2 behaves', () => {
-
+    expect(runner.part2(data)).toBe(0)
   })
 
   const data = ''
