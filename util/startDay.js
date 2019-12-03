@@ -18,11 +18,11 @@ const test = `import Day{day} from '../src/Day{day}'
 describe('Day {day}', () => {
   const runner = new Day{day}()
 
-  test('part 1 behaves', () => {
+  it('part 1 behaves', () => {
     expect(runner.part1(data)).toBe(0)
   })
 
-  test('part 2 behaves', () => {
+  it('part 2 behaves', () => {
     expect(runner.part2(data)).toBe(0)
   })
 
