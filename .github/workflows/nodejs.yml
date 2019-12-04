@@ -19,9 +19,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Yarn CLI
       uses: CultureHQ/actions-yarn@v1.0.1
-    - name: yarn install and test
+    - name: yarn install, lint, and test
       run: |
         yarn
+        yarn lint
         yarn test
       env:
         CI: true

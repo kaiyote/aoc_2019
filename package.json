@@ -20,6 +20,7 @@
   },
   "scripts": {
     "start": "node ./util/startDay.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src test util"
   }
 }
