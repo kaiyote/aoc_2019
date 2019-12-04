@@ -17,12 +17,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Yarn CLI
-      uses: CultureHQ/actions-yarn@v1.0.1
     - name: yarn install, lint, and test
       run: |
         yarn
         yarn lint
-        yarn test
+        yarn test --coverage
       env:
         CI: true
+    - uses: devmasx/coverage-check-action@v1.1.0
+      with:
+        type: lcov
+        result_path: coverage/lcov.info
+        min_coverage: 90
+        token: ${{secrets.GITHUB_TOKEN}}
