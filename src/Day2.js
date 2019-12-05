@@ -1,18 +1,9 @@
+import runIntCode from '../util/IntCodeEmulator'
+
 export default class Day2 {
   part1 (input) {
     const data = this._prepareInput(input)
-    let i = 0
-    while (i < data.length && data[i] !== 99) {
-      if (data[i] === 1) {
-        data[data[i + 3]] = data[data[i + 1]] + data[data[i + 2]]
-        i += 4
-      }
-      if (data[i] === 2) {
-        data[data[i + 3]] = data[data[i + 1]] * data[data[i + 2]]
-        i += 4
-      }
-    }
-    return data
+    return runIntCode(data)
   }
 
   part2 (input) {
