@@ -3,9 +3,9 @@
  * @param {number[]} memory
  * @param {(arg: number) => void} outputFun
  * @param {number} input
- * @return {numer[]} memory
+ * @return {number[]} memory
  */
-const runIntCode = (memory, outputFun = _ => {}, input = 1) => {
+const runIntCode = (memory, outputFun, input = 1) => {
   let instructionPointer = 0
   let done = false
 
@@ -34,7 +34,7 @@ const runIntCode = (memory, outputFun = _ => {}, input = 1) => {
         instructionPointer += 2
         break
       case 4: // print output
-        outputFun(getParam(memory, instructionPointer + 1, paramModes[0]))
+        outputFun && outputFun(getParam(memory, instructionPointer + 1, paramModes[0]))
         instructionPointer += 2
         break
       case 5: // jump-not-zero
