@@ -1,9 +1,9 @@
-import runIntCode from '../util/IntCodeEmulator'
+import IntCodeRunner from '../util/IntCodeEmulator'
 
 export default class Day2 {
   part1 (input) {
     const data = this._prepareInput(input)
-    return runIntCode(data)
+    return new IntCodeRunner(data).start()
   }
 
   part2 (input) {
