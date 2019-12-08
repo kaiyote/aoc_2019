@@ -8,6 +8,7 @@ export default class Day8 {
   part2 (input, width = 25, height = 6) {
     const layers = this._prepareInput(input, width, height)
     const pic = new Array(width * height).fill(0).map((_, i) => layers.map(l => l[i]).find(l => l !== 2))
+    console.log(this._chunkImage(pic, width).map(row => row.map(x => x === 0 ? ' ' : '█').join('')).join('\n'))
     return this._chunkImage(pic, width)
   }
 
