@@ -12,6 +12,7 @@ class IntCodeRunner {
     this.done = false
     this.paused = false
     this.outputFun = outputFun
+    this.relativeBase = 0
   }
 
   pause () {
@@ -35,16 +36,16 @@ class IntCodeRunner {
           this.done = true
           break
         case 1: // addition
-          this.memory[this.memory[this.instructionPointer + 3]] = paramModes
+          this.memory[this._getSetterParam(this.instructionPointer + 3, paramModes[2])] = paramModes
             .slice(0, 2)
-            .map((mode, i) => getParam(this.memory, this.instructionPointer + i + 1, mode))
+            .map((mode, i) => this._getParam(this.instructionPointer + i + 1, mode))
             .reduce((prev, curr) => prev + curr)
           this.instructionPointer += 4
           break
         case 2: // multiplication
-          this.memory[this.memory[this.instructionPointer + 3]] = paramModes
+          this.memory[this._getSetterParam(this.instructionPointer + 3, paramModes[2])] = paramModes
             .slice(0, 2)
-            .map((mode, i) => getParam(this.memory, this.instructionPointer + i + 1, mode))
+            .map((mode, i) => this._getParam(this.instructionPointer + i + 1, mode))
             .reduce((prev, curr) => prev * curr)
           this.instructionPointer += 4
           break
@@ -53,45 +54,79 @@ class IntCodeRunner {
             this.pause()
             break
           }
-          this.memory[this.memory[this.instructionPointer + 1]] = this.inputs.shift()
+          this.memory[this._getSetterParam(this.instructionPointer + 1, paramModes[0])] = this.inputs.shift()
           this.instructionPointer += 2
           break
         case 4: // print output
-          this.outputFun && this.outputFun(getParam(this.memory, this.instructionPointer + 1, paramModes[0]))
+          this.outputFun && this.outputFun(this._getParam(this.instructionPointer + 1, paramModes[0]))
           this.instructionPointer += 2
           break
         case 5: // jump-not-zero
-          if (getParam(this.memory, this.instructionPointer + 1, paramModes[0]) !== 0) {
-            this.instructionPointer = getParam(this.memory, this.instructionPointer + 2, paramModes[1])
+          if (this._getParam(this.instructionPointer + 1, paramModes[0]) !== 0) {
+            this.instructionPointer = this._getParam(this.instructionPointer + 2, paramModes[1])
           } else {
             this.instructionPointer += 3
           }
           break
         case 6: // jump-zero
-          if (getParam(this.memory, this.instructionPointer + 1, paramModes[0]) === 0) {
-            this.instructionPointer = getParam(this.memory, this.instructionPointer + 2, paramModes[1])
+          if (this._getParam(this.instructionPointer + 1, paramModes[0]) === 0) {
+            this.instructionPointer = this._getParam(this.instructionPointer + 2, paramModes[1])
           } else {
             this.instructionPointer += 3
           }
           break
         case 7: // bool-less-than
-          this.memory[this.memory[this.instructionPointer + 3]] =
-            getParam(this.memory, this.instructionPointer + 1, paramModes[0]) < getParam(this.memory, this.instructionPointer + 2, paramModes[1])
-              ? 1
-              : 0
+          this.memory[this._getSetterParam(this.instructionPointer + 3, paramModes[2])] =
+          this._getParam(this.instructionPointer + 1, paramModes[0]) < this._getParam(this.instructionPointer + 2, paramModes[1])
+            ? 1
+            : 0
           this.instructionPointer += 4
           break
         case 8: // bool-equals
-          this.memory[this.memory[this.instructionPointer + 3]] =
-            getParam(this.memory, this.instructionPointer + 1, paramModes[0]) === getParam(this.memory, this.instructionPointer + 2, paramModes[1])
-              ? 1
-              : 0
+          this.memory[this._getSetterParam(this.instructionPointer + 3, paramModes[2])] =
+          this._getParam(this.instructionPointer + 1, paramModes[0]) === this._getParam(this.instructionPointer + 2, paramModes[1])
+            ? 1
+            : 0
           this.instructionPointer += 4
+          break
+        case 9: // relative-offset
+          this.relativeBase += this._getParam(this.instructionPointer + 1, paramModes[0])
+          this.instructionPointer += 2
           break
       }
     }
 
     return this.memory
+  }
+
+  _getParam (pointer, paramMode) {
+    let param = null
+    switch (paramMode) {
+      case 0: // position mode
+        param = this.memory[this.memory[pointer]]
+        break
+      case 1: // immediate mode
+        param = this.memory[pointer]
+        break
+      case 2: // relative mode
+        param = this.memory[this.relativeBase + this.memory[pointer]]
+        break
+    }
+    return param || 0
+  }
+
+  _getSetterParam (pointer, paramMode) {
+    let param = null
+    switch (paramMode) {
+      case 0: // position mode
+        param = this.memory[pointer]
+        break
+      // no immediate mode for setter params, only position and relative
+      case 2: // relative mode
+        param = this.relativeBase + this.memory[pointer]
+        break
+    }
+    return param || 0
   }
 }
 
@@ -106,16 +141,5 @@ const parseOpCode = opcode => {
   const paramModes = digits.slice(0, digits.length - 2).reverse().map(x => +x)
   return [op, ...paramModes]
 }
-
-/**
- *
- * @param {number[]} memory
- * @param {number} pointer
- * @param {number} paramMode
- * @returns {number} param
- */
-const getParam = (memory, pointer, paramMode) => paramMode === 0
-  ? memory[memory[pointer]]
-  : memory[pointer]
 
 export default IntCodeRunner
