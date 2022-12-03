@@ -18,7 +18,7 @@ defmodule Aoc2019.Day1 do
   def part1(input) do
     input
     |> prepare_input()
-    |> Enum.map(&(calc_fuel(&1)))
+    |> Enum.map(&calc_fuel/1)
     |> Enum.sum()
   end
 
@@ -37,7 +37,7 @@ defmodule Aoc2019.Day1 do
   def part2(input) do
     input
     |> prepare_input()
-    |> Enum.map(&(calc_fuel(&1, true)))
+    |> Enum.map(&calc_fuel(&1, true))
     |> Enum.sum()
   end
 
@@ -51,6 +51,7 @@ defmodule Aoc2019.Day1 do
   @spec calc_fuel(integer(), boolean()) :: integer()
   defp calc_fuel(mass, recurse \\ false) do
     next = div(mass, 3) - 2
+
     case next do
       x when x > 0 and recurse -> next + calc_fuel(next, true)
       x when x > 0 -> next

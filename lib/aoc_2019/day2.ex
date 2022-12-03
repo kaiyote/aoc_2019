@@ -31,31 +31,34 @@ defmodule Aoc2019.Day2 do
   def part2(input) do
     memory = input |> prepare_input
 
-    (for noun <- 0..99, verb <- 0..99, into: [], do: [noun, verb])
-      |> Stream.drop_while(&(process(memory, true, &1) != 19_690_720))
-      |> Enum.take(1)
-      |> Enum.map(fn ([noun, verb]) -> 100 * noun + verb end)
-      |> Enum.at(0)
+    for(noun <- 0..99, verb <- 0..99, into: [], do: [noun, verb])
+    |> Stream.drop_while(&(process(memory, true, &1) != 19_690_720))
+    |> Enum.take(1)
+    |> Enum.map(fn [noun, verb] -> 100 * noun + verb end)
+    |> Enum.at(0)
   end
 
   @spec prepare_input(String.t()) :: [integer()]
   defp prepare_input(input) do
     input
-      |> String.split(~r/,/, trim: true)
-      |> Enum.map(&(Integer.parse(&1) |> elem(0)))
+    |> String.split(~r/,/, trim: true)
+    |> Enum.map(&(Integer.parse(&1) |> elem(0)))
   end
 
   @spec initialize([integer()], integer(), integer()) :: [integer()]
   defp initialize(memory, noun, verb) do
     memory
-      |> List.replace_at(1, noun)
-      |> List.replace_at(2, verb)
+    |> List.replace_at(1, noun)
+    |> List.replace_at(2, verb)
   end
 
   defp process(memory, do_replacement, [noun, verb]) do
-    (if do_replacement, do: initialize(memory, noun, verb), else: memory)
-      |> Aoc2019.IntCode.run()
-      |> elem(1)
-      |> Enum.at(0)
+    ram = if do_replacement, do: initialize(memory, noun, verb), else: memory
+
+    %Aoc2019.IntCode{memory: ram}
+    |> Aoc2019.IntCode.run()
+    |> elem(1)
+    |> Map.get(:memory)
+    |> Enum.at(0)
   end
 end

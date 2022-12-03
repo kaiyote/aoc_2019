@@ -17,7 +17,7 @@ defmodule Aoc2019.Day4 do
     input
     |> prepare_input()
     |> Stream.map(fn num -> repeats?(num) and increase?(num) end)
-    |> Enum.filter(&(&1))
+    |> Enum.filter(& &1)
     |> Enum.count()
   end
 
@@ -37,7 +37,7 @@ defmodule Aoc2019.Day4 do
     input
     |> prepare_input()
     |> Stream.map(fn num -> only_repeats_twice?(num) and increase?(num) end)
-    |> Enum.filter(&(&1))
+    |> Enum.filter(& &1)
     |> Enum.count()
   end
 
@@ -69,18 +69,21 @@ defmodule Aoc2019.Day4 do
   defp only_repeats_twice?(num) do
     graphemes = num |> Integer.to_string() |> String.graphemes()
 
-    doubles = graphemes
-    |> Enum.chunk_every(2, 1, :discard)
-    |> Enum.filter(fn [a, b] -> a == b end)
-    |> Enum.map(&Enum.at(&1, 0))
-    |> Enum.uniq()
+    doubles =
+      graphemes
+      |> Enum.chunk_every(2, 1, :discard)
+      |> Enum.filter(fn [a, b] -> a == b end)
+      |> Enum.map(&Enum.at(&1, 0))
+      |> Enum.uniq()
 
-    triples = graphemes
-    |> Enum.chunk_every(3, 1, :discard)
-    |> Enum.filter(fn [a, b, c] -> a == b and a == c end)
-    |> Enum.map(&Enum.at(&1, 0))
-    |> Enum.uniq()
+    triples =
+      graphemes
+      |> Enum.chunk_every(3, 1, :discard)
+      |> Enum.filter(fn [a, b, c] -> a == b and a == c end)
+      |> Enum.map(&Enum.at(&1, 0))
+      |> Enum.uniq()
 
-    not Enum.empty?(doubles) and (Enum.empty?(triples) or not Enum.all?(doubles, fn num -> Enum.member?(triples, num) end))
+    not Enum.empty?(doubles) and
+      (Enum.empty?(triples) or not Enum.all?(doubles, fn num -> Enum.member?(triples, num) end))
   end
 end

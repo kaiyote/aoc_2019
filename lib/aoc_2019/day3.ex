@@ -45,7 +45,9 @@ defmodule Aoc2019.Day3 do
 
     [path_1, path_2]
     |> intersections()
-    |> Enum.map(fn i -> {distance_to_intersection(path_1, i), distance_to_intersection(path_2, i)} end)
+    |> Enum.map(fn i ->
+      {distance_to_intersection(path_1, i), distance_to_intersection(path_2, i)}
+    end)
     |> Enum.map(fn {x, y} -> abs(x) + abs(y) end)
     |> Enum.min()
   end
@@ -54,17 +56,40 @@ defmodule Aoc2019.Day3 do
   defp prepare_input(input) do
     input
     |> String.split(~r/\n\s*/, trim: true)
-    |> Enum.map(&(String.split(&1, ~r/,/, trim: true)))
+    |> Enum.map(&String.split(&1, ~r/,/, trim: true))
   end
 
   defp path(commands, moves \\ [{0, 0}])
   defp path([], moves), do: moves
   defp path([current | rest], moves), do: path(rest, moves ++ move(current, List.last(moves)))
 
-  defp move("U" <> rest, location), do: location |> Stream.iterate(fn {x, y} -> {x, y + 1} end) |> Enum.take(String.to_integer(rest) + 1) |> Enum.drop(1)
-  defp move("D" <> rest, location), do: location |> Stream.iterate(fn {x, y} -> {x, y - 1} end) |> Enum.take(String.to_integer(rest) + 1) |> Enum.drop(1)
-  defp move("L" <> rest, location), do: location |> Stream.iterate(fn {x, y} -> {x - 1, y} end) |> Enum.take(String.to_integer(rest) + 1) |> Enum.drop(1)
-  defp move("R" <> rest, location), do: location |> Stream.iterate(fn {x, y} -> {x + 1, y} end) |> Enum.take(String.to_integer(rest) + 1) |> Enum.drop(1)
+  defp move("U" <> rest, location),
+    do:
+      location
+      |> Stream.iterate(fn {x, y} -> {x, y + 1} end)
+      |> Enum.take(String.to_integer(rest) + 1)
+      |> Enum.drop(1)
+
+  defp move("D" <> rest, location),
+    do:
+      location
+      |> Stream.iterate(fn {x, y} -> {x, y - 1} end)
+      |> Enum.take(String.to_integer(rest) + 1)
+      |> Enum.drop(1)
+
+  defp move("L" <> rest, location),
+    do:
+      location
+      |> Stream.iterate(fn {x, y} -> {x - 1, y} end)
+      |> Enum.take(String.to_integer(rest) + 1)
+      |> Enum.drop(1)
+
+  defp move("R" <> rest, location),
+    do:
+      location
+      |> Stream.iterate(fn {x, y} -> {x + 1, y} end)
+      |> Enum.take(String.to_integer(rest) + 1)
+      |> Enum.drop(1)
 
   defp intersections([path_1, path_2]) do
     path_1
@@ -73,5 +98,6 @@ defmodule Aoc2019.Day3 do
     |> MapSet.intersection(MapSet.new(path_2))
   end
 
-  defp distance_to_intersection(path, intersection), do: Enum.find_index(path, &(&1 == intersection))
+  defp distance_to_intersection(path, intersection),
+    do: Enum.find_index(path, &(&1 == intersection))
 end
