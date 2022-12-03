@@ -8,7 +8,7 @@ defmodule Aoc2019.IntCode do
 
   @spec run(%__MODULE__{}) :: {:ok, %__MODULE__{}} | {:error, %__MODULE__{}, integer()}
   def run(vm) do
-    [param_3, param_2, param_1, opcode_10, opcode_1] =
+    [_param_3, param_2, param_1, opcode_10, opcode_1] =
       Enum.at(vm.memory, vm.instruction_pointer)
       |> Integer.to_string()
       |> String.pad_leading(5, "0")
